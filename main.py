@@ -53,7 +53,7 @@ def main():
             curr_path = "/".join(curr_path.split("/")[:-1])
             continue
 
-        if inp.isdigit():
+        if inp.isdigit() & (int(inp) <= len(entries)):
             inp = int(inp) - 1
             if inp >= len(entries):
                 print("Invalid input. Please try again.")
