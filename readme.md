@@ -5,6 +5,7 @@ Uses the Dropbox SDK to navigate and download files from Dropbox
 ## Dependencies
 
 [Python Dropbox SDK](https://github.com/dropbox/dropbox-sdk-python)
+<br>
 [python-dotenv](https://pypi.org/project/python-dotenv/)
 
 ## Installation
