@@ -52,3 +52,21 @@ To run the program, you should run the following command:
 ```bash
 python -m main
 ```
+
+## Running as a terminal command
+
+This program also has the option to create a terminal command to explore dropbox. To do this, follow the steps below:
+1. Make sure you are not in a virtual environment (may need to restart your terminal)
+2. Install the dependencies in your root python install:
+```bash
+pip install -r requirements.txt
+```
+3. Create the command
+```bash
+pip install --editable {path_to_repo}
+```
+
+This should create the commmand for use! To run the program, run the following command:
+```bash
+python-dropbox-cli explore
+```
