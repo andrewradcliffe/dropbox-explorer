@@ -44,8 +44,8 @@ def main():
         print("\n=------------------ Options ------------------=")
         print("To open a folder, type in the name or number")
         print("To download a file, type in the name or number")
-        print("To exit, type in 'exit'")
         print("To go back a level, type '..'")
+        print("To exit, type 'exit'")
 
         valid_inp = False
         while not valid_inp:
