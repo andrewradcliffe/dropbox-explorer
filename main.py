@@ -8,7 +8,7 @@ def setup_dropbox():
         print("To get started, please enter your Dropbox API key:")
         key = input()
 
-        with open('.env', 'x') as f:
+        with open('.env', 'w') as f:
             f.write(f"DROPBOX_TOKEN={key}")
             print("Your Dropbox API key has been saved successfully! You will not have to enter this again")
             print("Your token can be found in .env and edited from there in future.")
@@ -17,7 +17,7 @@ def setup_dropbox():
         print("Please enter the path where you would like to download files to:")
         path = input()
 
-        with open('.env', 'x') as f:
+        with open('.env', 'a') as f:
             f.write(f"DOWNLOAD_PATH={path}")
             print("Your download path has been saved successfully! You will not have to enter this again")
             print("Your path can be found in .env and edited from there in future.")
