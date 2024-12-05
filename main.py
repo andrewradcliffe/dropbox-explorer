@@ -33,12 +33,14 @@ def main():
         print(f"\nCurrent path: {curr_path or DEFAULT_PATH}")
         print("\n=------------------ Files / Folders ------------------=")
 
-        for entry in dbx.files_list_folder(curr_path).entries:
-            print(entry.name) if not isinstance(entry, dropbox.files.FolderMetadata) else print(f"{entry.name}/")
+        entries = dbx.files_list_folder(curr_path).entries
+        
+        for i, entry in enumerate(entries):
+            print(f"{i+1}: {entry.name}") if not isinstance(entry, dropbox.files.FolderMetadata) else print(f"{i+1}: {entry.name}/")
 
         print("\n=------------------ Options ------------------=")
-        print("To open a folder, type in the name")
-        print("To download a file, type in the name")
+        print("To open a folder, type in the name or number")
+        print("To download a file, type in the name or number")
         print("To exit, type in 'exit'")
         print("To go back a level, type '..'")
 
@@ -50,6 +52,13 @@ def main():
         if inp == "..":
             curr_path = "/".join(curr_path.split("/")[:-1])
             continue
+
+        if inp.isdigit():
+            inp = int(inp) - 1
+            if inp >= len(entries):
+                print("Invalid input. Please try again.")
+                continue
+            inp = entries[inp].name
 
         path = f"{curr_path}/{inp}" if curr_path != "" else f"{DEFAULT_PATH}{inp}"
 
