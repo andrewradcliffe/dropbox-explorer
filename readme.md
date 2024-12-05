@@ -21,7 +21,7 @@ python -m venv venv
 ```bash
 pip install -r requirements.txt
 ```
-3. (Optional) set up a local `.env` file with the following variables
+3. (Optional) set up a local `.env` file in the project root folder with the following variables
 ```
 DROPBOX_TOKEN = "{dropbox API key}"
 DOWNLOAD_PATH = "{path to downloads folder (or other)}"
