@@ -24,6 +24,9 @@ def setup_dropbox():
     
     return dropbox.Dropbox(DROPBOX_TOKEN or key)
 
+def validate_input(inp, entries):
+    return (inp.isdigit() and (int(inp) <= len(entries))) or any([entry.name == inp for entry in entries]) or (inp == "..") or (inp == "exit")
+
 def main():
     print('*------------------ Welcome to Python Dropbox Explorer ------------------*')
     dbx = setup_dropbox()
@@ -44,7 +47,12 @@ def main():
         print("To exit, type in 'exit'")
         print("To go back a level, type '..'")
 
-        inp = input("\n")
+        valid_inp = False
+        while not valid_inp:
+            inp = input("\n")
+            valid_inp = validate_input(inp, entries)
+            if not valid_inp:
+                print("Invalid input. Please try again.")
 
         if inp == "exit":
             break
@@ -53,18 +61,11 @@ def main():
             curr_path = "/".join(curr_path.split("/")[:-1])
             continue
 
-        if inp.isdigit() & (int(inp) <= len(entries)):
+        if inp.isdigit() and (int(inp) <= len(entries)):
             inp = int(inp) - 1
-            if inp >= len(entries):
-                print("Invalid input. Please try again.")
-                continue
             inp = entries[inp].name
 
         path = f"{curr_path}/{inp}" if curr_path != "" else f"{DEFAULT_PATH}{inp}"
-
-        if not any([entry.name == inp for entry in dbx.files_list_folder(curr_path).entries]):
-            print("Invalid input. Please try again.")
-            continue
 
         if isinstance(dbx.files_get_metadata(path), dropbox.files.FolderMetadata):
             curr_path = path
