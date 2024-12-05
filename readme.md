@@ -63,7 +63,7 @@ pip install -r requirements.txt
 ```
 3. Create the command
 ```bash
-pip install --editable {path_to_repo}
+pip install --editable {path/to/repo}
 ```
 
 This should create the commmand for use! To run the program, run the following command:
