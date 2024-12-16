@@ -1,34 +1,46 @@
-from vars import DOWNLOAD_PATH, DROPBOX_TOKEN
+from vars import get_variables
 import dropbox
+import os
 
 DEFAULT_PATH = "/"
+DROPBOX_TOKEN = ""
+DOWNLOAD_PATH = ""
+
+def init():
+    if os.path.exists('.env'):
+        return get_variables()
+
+    print("To get started, please enter your Dropbox API key:")
+    key = input()
+    print("\nPlease enter the path where you would like to download files to:")
+    path = input()
+
+    with open('.env', 'w') as f:
+        f.write(f'DROPBOX_TOKEN = "{key}"\n')
+        f.write(f'DOWNLOAD_PATH = "{path}"')
+
+    print("\nYour Dropbox API key and download path have been saved successfully! You will not have to enter these again")
+    print("These values can be found in file .env and edited from there in future.")
+
+    return get_variables()
 
 def setup_dropbox():
-    if not DROPBOX_TOKEN:
-        print("To get started, please enter your Dropbox API key:")
-        key = input()
-
-        with open('.env', 'w') as f:
-            f.write(f'DROPBOX_TOKEN = "{key}"')
-            print("Your Dropbox API key has been saved successfully! You will not have to enter this again")
-            print("Your token can be found in .env and edited from there in future.")
-
-    if not DOWNLOAD_PATH:
-        print("Please enter the path where you would like to download files to:")
-        path = input()
-
-        with open('.env', 'a') as f:
-            f.write(f'\nDOWNLOAD_PATH = "{path}"')
-            print("Your download path has been saved successfully! You will not have to enter this again")
-            print("Your path can be found in .env and edited from there in future.")
-    
-    return dropbox.Dropbox(DROPBOX_TOKEN or key)
+    return dropbox.Dropbox(DROPBOX_TOKEN)
 
 def validate_input(inp, entries):
     return (inp.isdigit() and (int(inp) <= len(entries))) or any([entry.name == inp for entry in entries]) or (inp == "..") or (inp == "exit")
 
+def get_temp_link(dbx, path):
+    try:
+        return dbx.files_get_temporary_link(path)
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return
+
 def main():
     print('*------------------ Welcome to Python Dropbox Explorer ------------------*')
+    global DROPBOX_TOKEN, DOWNLOAD_PATH
+    DROPBOX_TOKEN, DOWNLOAD_PATH = init()
     dbx = setup_dropbox()
 
     curr_path = ""
@@ -71,7 +83,14 @@ def main():
             curr_path = path
             continue
 
-        _, res = dbx.files_download(path)
+        try:
+            _, res = dbx.files_download(path)
+        except Exception as e:
+            print(f"\nAn error occurred: {e}")
+            print("The file could not be downloaded.")
+            link = get_temp_link(dbx, path)
+            print(f"Temporary link: {link.link}") if link else print("Temporary link could not be generated.")
+            continue
         with open(f"{DOWNLOAD_PATH}/{inp}", "wb") as f:
             f.write(res.content)
         print(f"\nFile {inp} has been downloaded successfully!")
