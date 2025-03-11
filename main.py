@@ -1,31 +1,43 @@
-from vars import get_variables
+import vars
 import dropbox
 import os
 
 DEFAULT_PATH = "/"
-DROPBOX_TOKEN = ""
-DOWNLOAD_PATH = ""
 
 def init():
     if os.path.exists('.env'):
-        return get_variables()
+        return vars.get_variables()
 
     print("To get started, please enter your Dropbox API key:")
     key = input()
+    print("Please enter your App Key:")
+    app_key = input()
+    print("Please enter your App Secret:")
+    app_secret = input()
+    print("Please enter your Team Member ID:")
+    team_member_id = input()
     print("\nPlease enter the path where you would like to download files to:")
     path = input()
 
     with open('.env', 'w') as f:
         f.write(f'DROPBOX_TOKEN = "{key}"\n')
+        f.write(f'DROPBOX_APP_KEY = "{app_key}"\n')
+        f.write(f'DROPBOX_APP_SECRET = "{app_secret}"\n')
+        f.write(f'DROPBOX_TEAM_MEMBER_ID = "{team_member_id}"\n')
         f.write(f'DOWNLOAD_PATH = "{path}"')
 
     print("\nYour Dropbox API key and download path have been saved successfully! You will not have to enter these again")
     print("These values can be found in file .env and edited from there in future.")
 
-    return get_variables()
+    vars.get_variables()
 
 def setup_dropbox():
-    return dropbox.Dropbox(DROPBOX_TOKEN)
+    return dropbox.Dropbox(
+        oauth2_refresh_token=vars.DROPBOX_TOKEN,
+        app_key=vars.DROPBOX_APP_KEY,
+        app_secret=vars.DROPBOX_APP_SECRET,
+        headers={"Dropbox-API-Select-User": vars.DROPBOX_TEAM_MEMBER_ID},
+    )
 
 def validate_input(inp, entries):
     return (inp.isdigit() and (int(inp) <= len(entries))) or any([entry.name == inp for entry in entries]) or (inp == "..") or (inp == "exit")
@@ -39,8 +51,7 @@ def get_temp_link(dbx, path):
 
 def main():
     print('*------------------ Welcome to Python Dropbox Explorer ------------------*')
-    global DROPBOX_TOKEN, DOWNLOAD_PATH
-    DROPBOX_TOKEN, DOWNLOAD_PATH = init()
+    init()
     dbx = setup_dropbox()
 
     curr_path = ""
@@ -91,7 +102,7 @@ def main():
             link = get_temp_link(dbx, path)
             print(f"Temporary link: {link.link}") if link else print("Temporary link could not be generated.")
             continue
-        with open(f"{DOWNLOAD_PATH}/{inp}", "wb") as f:
+        with open(f"{vars.DOWNLOAD_PATH}/{inp}", "wb") as f:
             f.write(res.content)
         print(f"\nFile {inp} has been downloaded successfully!")
 
