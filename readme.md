@@ -27,6 +27,9 @@ pip install -r requirements.txt
 ```
 DROPBOX_TOKEN = "{dropbox API key}"
 DOWNLOAD_PATH = "{path to downloads folder (or other)}"
+DROPBOX_TEAM_MEMBER_ID="{team member ID}"
+DROPBOX_APP_KEY="{app key}"
+DROPBOX_APP_SECRET="{app secret}"
 ```
 
 The last step is optional as you have the option to set these variables the first time you run the program, it will automatically create and save the variables in a `.env` file.
